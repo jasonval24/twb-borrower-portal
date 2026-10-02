@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: twb-borrower-portal
+    runtime: node
+    plan: starter
+    buildCommand: npm install --omit=dev
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DEMO_BORROWER_PASSWORD
+        value: ABC12345
+      - key: PAYPAL_ME_USERNAME
+        value: jasongvalenzuela

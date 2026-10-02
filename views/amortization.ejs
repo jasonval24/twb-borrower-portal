@@ -1,0 +1,45 @@
+<%- include('layout-start') %>
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Schedule</p>
+    <h1>Amortization</h1>
+    <p class="muted">
+      <%= fmtMoney(note.terms.originalPrincipal) %> note · <%= note.terms.interestRateDisplay %> ·
+      <%= note.terms.termYears %> years · monthly <%= fmtMoney(amort.monthlyPayment) %>
+    </p>
+  </div>
+  <span class="badge">LOCAL SCHEDULE</span>
+</div>
+
+<article class="card">
+  <div class="table-wrap tall">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Due date</th>
+          <th>Payment</th>
+          <th>Principal</th>
+          <th>Interest</th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% amort.schedule.forEach(function(row) {
+             var isNext = row.paymentNumber === note.state.nextPaymentNumber;
+             var isPaid = note.state.lastPaymentNumber && row.paymentNumber <= note.state.lastPaymentNumber;
+        %>
+        <tr class="<%= isNext ? 'row-next' : (isPaid ? 'row-paid' : '') %>">
+          <td><%= row.paymentNumber %><% if (isNext) { %> <span class="pill">NEXT</span><% } %></td>
+          <td><%= fmtDate(row.dueDate) %></td>
+          <td><%= fmtMoney(row.payment) %></td>
+          <td><%= fmtMoney(row.principal) %></td>
+          <td><%= fmtMoney(row.interest) %></td>
+          <td><%= fmtMoney(row.balance) %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</article>
+<%- include('layout-end') %>

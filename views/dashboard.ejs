@@ -1,0 +1,110 @@
+<%- include('layout-start') %>
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Welcome back</p>
+    <h1><%= note.borrower.name %></h1>
+    <p class="muted"><%= note.property.address %>, <%= note.property.city %>, <%= note.property.state %> <%= note.property.zip %> · Note <%= note.noteId %></p>
+  </div>
+  <span class="badge">DEMO NOTE</span>
+</div>
+
+<div class="grid metrics">
+  <article class="card metric">
+    <h2>Current principal</h2>
+    <p class="metric-value"><%= fmtMoney(note.state.currentPrincipalBalance) %></p>
+    <p class="muted">Original <%= fmtMoney(note.terms.originalPrincipal) %> · <%= note.terms.interestRateDisplay %> · <%= note.terms.termYears %>-yr</p>
+  </article>
+  <article class="card metric accent">
+    <h2>Amount due</h2>
+    <% if (amountDue && amountDue.total > 0) { %>
+    <p class="metric-value"><%= fmtMoney(amountDue.total) %></p>
+    <p class="muted">On-time <%= fmtMoney(amountDue.onTimePayment || amountDue.regularPayment) %><% if (amountDue.lateFees > 0) { %> · <%= fmtMoney(amountDue.lateFees) %> late fees included<% } %></p>
+    <% } else if (note.state.nextPaymentNumber) { %>
+    <p class="metric-value"><%= fmtMoney(amountDue.regularPayment || note.state.nextPaymentAmount) %></p>
+    <p class="muted">Next due <%= fmtDate(note.state.nextPaymentDueDate) %></p>
+    <% } else { %>
+    <p class="metric-value">Paid off</p>
+    <% } %>
+  </article>
+  <article class="card metric">
+    <h2>YTD interest paid</h2>
+    <p class="metric-value"><%= fmtMoney(note.state.ytdInterestPaid) %></p>
+    <p class="muted">Calendar year <%= note.state.ytdYear %></p>
+  </article>
+</div>
+
+<div class="grid two">
+  <article class="card">
+    <h2>What you owe</h2>
+    <% if (note.state.nextPaymentNumber || (amountDue && amountDue.total > 0)) { %>
+    <dl class="kv">
+      <% const split = amountDue.paymentSplit || {};
+         (split.allocations || []).forEach(function(a) { %>
+      <div><dt><%= a.label || a.month %> payment due</dt><dd><%= fmtMoney(a.total != null ? a.total : a.amount) %></dd></div>
+      <% }); %>
+      <div><dt>Total due</dt><dd><strong><%= fmtMoney(amountDue.total) %></strong></dd></div>
+    </dl>
+    <div class="actions">
+      <% if (amountDue.total <= 0) { %>
+      <button class="btn btn-primary" disabled>Nothing due for <%= monthKey %></button>
+      <% } else { %>
+      <a class="btn btn-primary" href="/pay">Make payment · <%= fmtMoney(amountDue.total) %></a>
+      <% } %>
+      <a class="btn btn-secondary" href="/amortization">View amortization</a>
+    </div>
+    <% } else { %>
+    <p>This note has no remaining payments.</p>
+    <% } %>
+  </article>
+
+  <article class="card">
+    <h2>Note terms</h2>
+    <dl class="kv">
+      <div><dt>Interest rate</dt><dd><%= note.terms.interestRateDisplay %></dd></div>
+      <div><dt>Monthly payment</dt><dd><%= fmtMoney(note.terms.monthlyPayment) %></dd></div>
+      <div><dt>First payment</dt><dd><%= fmtDate(note.terms.firstPaymentDate) %></dd></div>
+      <div><dt>Maturity</dt><dd><%= fmtDate(note.terms.maturityDate) %></dd></div>
+      <div><dt>Servicer</dt><dd><%= note.terms.servicer %></dd></div>
+    </dl>
+  </article>
+</div>
+
+<article class="card">
+  <div class="card-head">
+    <h2>History</h2>
+    <span class="muted">Last <%= payments.length %> payments</span>
+  </div>
+  <% if (!payments.length) { %>
+  <p class="muted">No payments posted yet.</p>
+  <% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Principal</th>
+          <th>Interest</th>
+          <th>Method</th>
+          <th>Confirmation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% payments.forEach(function(p) { %>
+        <tr>
+          <td><%= p.paymentNumber %></td>
+          <td><%= fmtDate(p.date) %></td>
+          <td><%= fmtMoney(p.amount) %></td>
+          <td><%= fmtMoney(p.principal) %></td>
+          <td><%= fmtMoney(p.interest) %></td>
+          <td><%= p.method || '—' %></td>
+          <td><a href="/receipt/<%= encodeURIComponent(p.confirmationId) %>"><%= p.confirmationId %></a></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+</article>
+<%- include('layout-end') %>

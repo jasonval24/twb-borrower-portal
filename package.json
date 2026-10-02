@@ -1,0 +1,19 @@
+{
+  "name": "twb-borrower-portal",
+  "version": "1.0.0",
+  "description": "Minimal borrower portal for TWB House Buyers — demo mortgage note servicing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "express-session": "^1.18.0"
+  }
+}

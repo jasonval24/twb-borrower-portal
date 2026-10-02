@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title %> · TWB House Buyers</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="wordmark" href="<%= user ? '/dashboard' : '/login' %>">
+        <img class="brand-logo" src="/logo.png" alt="TWB House Buyers" width="220" height="39" />
+        <span class="wordmark-text">
+          <small>Borrower Portal</small>
+        </span>
+      </a>
+      <% if (user) { %>
+      <nav class="nav">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/pay">Make payment</a>
+        <a href="/amortization">Amortization</a>
+        <form class="inline" method="post" action="/logout">
+          <button type="submit" class="btn btn-ghost btn-sm">Sign out</button>
+        </form>
+      </nav>
+      <% } %>
+    </div>
+  </header>
+  <main class="container main">

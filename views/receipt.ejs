@@ -1,0 +1,42 @@
+<%- include('layout-start') %>
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Confirmation</p>
+    <h1>Payment receipt</h1>
+    <p class="muted">Thank you — your payment has been recorded locally.</p>
+  </div>
+  <span class="badge">DEMO</span>
+</div>
+
+<article class="card receipt">
+  <dl class="kv">
+    <div><dt>Confirmation ID</dt><dd><code><%= payment.confirmationId %></code></dd></div>
+    <div><dt>Date</dt><dd><%= fmtDate(payment.date) %></dd></div>
+    <div><dt>Payment #</dt><dd><%= payment.paymentNumber %></dd></div>
+    <div><dt>Amount paid</dt><dd><strong><%= fmtMoney(payment.amount) %></strong></dd></div>
+    <div><dt>Principal</dt><dd><%= fmtMoney(payment.principal) %></dd></div>
+    <div><dt>Interest</dt><dd><%= fmtMoney(payment.interest) %></dd></div>
+    <div><dt>Method</dt><dd><%= payment.method %></dd></div>
+    <div><dt>Updated principal balance</dt><dd><%= fmtMoney(note.state.currentPrincipalBalance) %></dd></div>
+    <div><dt>YTD interest (<%= note.state.ytdYear %>)</dt><dd><%= fmtMoney(note.state.ytdInterestPaid) %></dd></div>
+    <div>
+      <dt>QuickBooks Online</dt>
+      <dd>
+        <% if (payment.qboStatus === 'synced') { %>
+          Synced<% if (payment.qboTxnId) { %> · JE #<%= payment.qboTxnId %><% } %>
+        <% } else if (payment.qboStatus === 'skipped' || payment.qboStatus === 'pending') { %>
+          <span class="status-warn">Pending QuickBooks sync</span>
+          <% if (payment.qboMessage) { %><br /><span class="muted small"><%= payment.qboMessage %></span><% } %>
+        <% } else { %>
+          <span class="status-error">Sync error</span>
+          <% if (payment.qboMessage) { %><br /><span class="muted small"><%= payment.qboMessage %></span><% } %>
+        <% } %>
+      </dd>
+    </div>
+  </dl>
+  <div class="actions">
+    <a class="btn btn-primary" href="/dashboard">Back to dashboard</a>
+    <a class="btn btn-secondary" href="/amortization">Amortization schedule</a>
+  </div>
+</article>
+<%- include('layout-end') %>

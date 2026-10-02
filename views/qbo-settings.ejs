@@ -1,0 +1,57 @@
+<%- include('layout-start') %>
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Servicer setup</p>
+    <h1>QuickBooks Online</h1>
+    <p class="muted">Payment processor only — portal posts Journal Entries with principal/interest split. Amortization stays local.</p>
+  </div>
+  <span class="badge">QBO</span>
+</div>
+
+<% if (flash) { %><div class="alert alert-info"><%= flash %></div><% } %>
+<% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+<div class="grid two">
+  <article class="card">
+    <h2>Connection status</h2>
+    <dl class="kv">
+      <div><dt>Environment</dt><dd><%= status.environment %></dd></div>
+      <div><dt>OAuth app (client id/secret)</dt><dd><%= status.oauthAppReady ? 'Ready' : 'Missing' %></dd></div>
+      <div><dt>Tokens + realm</dt><dd><%= status.tokensPresent ? 'Present' : 'Not connected' %></dd></div>
+      <div><dt>Realm ID</dt><dd><code><%= status.realmId || '—' %></code></dd></div>
+      <div><dt>Account mapping</dt><dd><%= status.accountsMapped ? 'Mapped' : 'Missing account IDs' %></dd></div>
+      <div><dt>Ready to post payments</dt><dd><strong><%= status.readyToPost ? 'Yes' : 'No' %></strong></dd></div>
+      <div><dt>Redirect URI</dt><dd><code class="wrap"><%= status.redirectUri %></code></dd></div>
+      <div><dt>Scope</dt><dd><code><%= status.scope %></code></dd></div>
+    </dl>
+    <% if (status.missing && status.missing.length) { %>
+    <p class="hint">Still needed: <%= status.missing.join(', ') %></p>
+    <% } %>
+    <div class="actions">
+      <% if (status.oauthAppReady) { %>
+      <a class="btn btn-primary" href="/oauth/connect">Connect QuickBooks</a>
+      <% } else { %>
+      <button class="btn btn-primary" disabled>Connect QuickBooks</button>
+      <p class="hint">Add QBO_CLIENT_ID and QBO_CLIENT_SECRET to .env first.</p>
+      <% } %>
+      <% if (status.tokensPresent) { %>
+      <form method="post" action="/oauth/disconnect" class="inline">
+        <button type="submit" class="btn btn-secondary">Clear stored tokens</button>
+      </form>
+      <% } %>
+      <a class="btn btn-ghost" href="/dashboard">Back</a>
+    </div>
+  </article>
+
+  <article class="card">
+    <h2>What Pay posts</h2>
+    <p>Each successful portal payment creates one Journal Entry:</p>
+    <ul class="plain">
+      <li><strong>Debit</strong> Bank / Undeposited Funds — full payment amount</li>
+      <li><strong>Credit</strong> Note Receivable — principal (from local amort row)</li>
+      <li><strong>Credit</strong> Interest Income — interest (from local amort row)</li>
+    </ul>
+    <p class="hint">QBO is not used for invoices or as the amortization source. If QBO is not configured, payments still succeed locally with “Pending QuickBooks sync”.</p>
+  </article>
+</div>
+<%- include('layout-end') %>

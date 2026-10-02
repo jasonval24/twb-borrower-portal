@@ -1,0 +1,22 @@
+<%- include('layout-start') %>
+<section class="auth-wrap">
+  <div class="card auth-card">
+    <p class="eyebrow">Secure borrower access</p>
+    <h1>Sign in</h1>
+    <p class="muted">View your note balance, payment history, and make your monthly payment.</p>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <form method="post" action="/login" class="stack">
+      <label>
+        Cell phone number
+        <input type="tel" name="phone" value="<%= phone || '' %>" required autocomplete="tel" inputmode="tel" placeholder="(956) 555-0100" />
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" required autocomplete="current-password" />
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+    </form>
+    <p class="hint">Temporary password: <code>ABC12345</code>. Sign in with your cell phone number.</p>
+  </div>
+</section>
+<%- include('layout-end') %>

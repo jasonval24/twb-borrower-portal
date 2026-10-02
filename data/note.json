@@ -1,0 +1,70 @@
+{
+  "noteId": "NOTE-MURILLO-405-HABANERO",
+  "demo": true,
+  "borrower": {
+    "name": "Jorge & Daniella Murillo",
+    "email": "maria.rodriguez@example.com",
+    "phone": "9565550100",
+    "phoneNote": "PLACEHOLDER for unpublished review \u2014 replace with Jorge\u2019s real cell before go-live"
+  },
+  "property": {
+    "address": "405 Habanero",
+    "city": "Donna",
+    "state": "TX",
+    "zip": "78537",
+    "county": "Hidalgo"
+  },
+  "terms": {
+    "originalPrincipal": 59590,
+    "interestRateAnnual": 0.0968,
+    "interestRateDisplay": "9.68%",
+    "termMonths": 241,
+    "termYears": 20.1,
+    "monthlyPayment": 562.28,
+    "firstPaymentDate": "2017-05-01",
+    "maturityDate": "2037-05-01",
+    "noteDate": "2017-04-01",
+    "servicer": "TWB House Buyers / Texas Wealth Builders"
+  },
+  "state": {
+    "currentPrincipalBalance": 44831.21,
+    "nextPaymentNumber": 113,
+    "nextPaymentDueDate": "2026-09-01",
+    "nextPaymentAmount": 562.28,
+    "nextPrincipal": 200.64,
+    "nextInterest": 361.64,
+    "ytdInterestPaid": 3311.48,
+    "ytdYear": 2026,
+    "lastPaymentNumber": 112,
+    "amountDueOverride": null
+  },
+  "billing": {
+    "regularPayment": 562.28,
+    "dueDay": 1,
+    "lateFeeAmount": 50,
+    "lateFeeDay": 10,
+    "billingStartMonth": "2026-02",
+    "paidInstallments": 7,
+    "notes": "On-time $562.28 (1st). $50 late fee from the 10th \u2192 $612.28. As of Oct 2026: two installments due (Sep+Oct). No $400 in totals. No portal invoice creation. History = payments actually received through Aug 2026 (#112).",
+    "accruedLateFeeMonths": [],
+    "qboCustomerId": "25",
+    "qboCustomerName": "Jorge Murillo - 405 Habanero Donna, TX 78537",
+    "qboInvoiceMap": {
+      "2026-09": {
+        "docNumber": "1008",
+        "id": "837",
+        "onTimeAmount": 562.28,
+        "label": "September"
+      },
+      "2026-10": {
+        "docNumber": null,
+        "id": null,
+        "onTimeAmount": 562.28,
+        "label": "October",
+        "createIfMissing": false,
+        "txnDate": "2026-10-01"
+      }
+    },
+    "onTimePayment": 562.28
+  }
+}

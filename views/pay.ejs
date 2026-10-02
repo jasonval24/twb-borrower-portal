@@ -1,0 +1,94 @@
+<%- include('layout-start') %>
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Secure payment</p>
+    <h1>Make a payment</h1>
+    <p class="muted">Pay your current balance due with PayPal.</p>
+  </div>
+  <span class="badge">PAYPAL.ME</span>
+</div>
+
+<% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+<div class="grid two">
+  <article class="card">
+    <h2>Amount due</h2>
+    <% if (!note.state.nextPaymentNumber && amountDue.missedPayments === 0) { %>
+    <p>No remaining scheduled payments.</p>
+    <% } else if (amountDue.total <= 0) { %>
+    <div class="alert alert-info">
+      Nothing is due right now.
+    </div>
+    <button class="btn btn-primary" disabled>Nothing due</button>
+    <% } else {
+      const split = amountDue.paymentSplit || {};
+      const lines = split.allocations || [];
+    %>
+    <% if (lines.length) { %>
+    <ul class="due-lines" style="list-style:none;padding:0;margin:0 0 0.75rem;">
+      <% lines.forEach(function(line) { %>
+      <li style="display:flex;justify-content:space-between;gap:1rem;padding:0.35rem 0;border-bottom:1px solid rgba(0,0,0,0.08);">
+        <span><%= line.label || line.month %> payment due<% if (line.lateFee > 0) { %> <span class="muted">(includes $<%= Number(line.lateFee).toFixed(2) %> late fee)</span><% } %></span>
+        <strong><%= fmtMoney(line.total != null ? line.total : line.amount) %></strong>
+      </li>
+      <% }) %>
+    </ul>
+    <p class="metric-value"><%= fmtMoney(amountDue.total) %></p>
+    <p class="muted">On-time <%= fmtMoney(amountDue.onTimePayment || amountDue.regularPayment) %> · late fee <%= fmtMoney(amountDue.lateFeeAmount) %> from the 10th</p>
+    <% } else { %>
+    <p class="metric-value"><%= fmtMoney(amountDue.total) %></p>
+    <% } %>
+    <% } %>
+  </article>
+
+  <article class="card">
+    <h2>Pay with PayPal</h2>
+    <p class="hint">Opens your PayPal.Me link so the borrower can pay the amount due. No business app or sandbox setup.</p>
+    <% if (amountDue.total <= 0) { %>
+    <button class="btn btn-primary btn-block" disabled>Nothing due</button>
+    <% } else if (!paypalMeUrl) { %>
+    <div class="alert alert-info">PayPal.Me link is not set yet.</div>
+    <button class="btn btn-primary btn-block" disabled>Pay Now</button>
+    <% } else { %>
+    <p class="metric-value" style="font-size:1.25rem;margin-bottom:0.75rem;"><%= fmtMoney(amountDue.total) %></p>
+    <a class="btn btn-primary btn-block" href="<%= paypalMeUrl %>" target="_blank" rel="noopener noreferrer">Pay Now</a>
+    <p class="muted" style="margin-top:0.75rem;">You’ll finish on PayPal. After you pay, keep your receipt — Texas Wealth Builders will match it to your note.</p>
+    <% } %>
+  </article>
+</div>
+
+<article class="card" style="margin-top: 1.25rem;">
+  <div class="card-head">
+    <h2>History</h2>
+    <span class="muted"><%= payments.length %> recent</span>
+  </div>
+  <% if (!payments.length) { %>
+  <p class="muted">No payments posted yet.</p>
+  <% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Method</th>
+          <th>Confirmation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% payments.forEach(function(p) { %>
+        <tr>
+          <td><%= p.paymentNumber %></td>
+          <td><%= fmtDate(p.date) %></td>
+          <td><%= fmtMoney(p.amount) %></td>
+          <td><%= p.method || '—' %></td>
+          <td><a href="/receipt/<%= encodeURIComponent(p.confirmationId) %>"><%= p.confirmationId %></a></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+</article>
+<%- include('layout-end') %>
